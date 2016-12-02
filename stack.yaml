@@ -39,13 +39,16 @@ packages:
 - '.'
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
-extra-deps: []
+extra-deps: [uuagc-0.9.52.1, uulib-0.9.22, uuagc-cabal-1.0.6.0]
 
 # Override default flag values for local packages and extra-deps
 flags: {}
 
 # Extra package databases containing global packages
 extra-package-dbs: []
+
+explicit-setup-deps:
+  favr: true
 
 # Control whether we use the GHC we find on the path
 # system-ghc: true

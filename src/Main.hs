@@ -2,6 +2,7 @@ module Main where
 import System.Environment
 import System.IO
 import Parser
+import Test
 
 main :: IO ()
 main = do
