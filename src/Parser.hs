@@ -1,21 +1,19 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE Rank2Types #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE FlexibleInstances         #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE Rank2Types                #-}
+{-# LANGUAGE TypeSynonymInstances      #-}
 
 module Parser where
 
-import Data.Char
-import Text.ParserCombinators.UU
-import Text.ParserCombinators.UU.Utils
-import Text.ParserCombinators.UU.BasicInstances hiding (Parser)
-import System.IO
-import GHC.IO.Handle.Types
-import Ast
+--import Data.Char
+import           Text.ParserCombinators.UU
+import           Text.ParserCombinators.UU.Utils
+--import Text.ParserCombinators.UU.BasicInstances hiding (Parser)
+import           Ast
+import           GHC.IO.Handle.Types
+import           System.IO
 
 parseFile :: FilePath -> IO HaskellAst
 parseFile file

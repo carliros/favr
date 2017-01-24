@@ -1,18 +1,16 @@
+
+
+-- UUAGC 0.9.52.1 (src/Ast.ag)
 module Ast where
-
-data HaskellAst
-  = LetIn { letIdentifier :: String
-          , letValue :: Expression
-          , inExp :: Expression}
-  deriving Show
-
-data Expression
-  = Literal {value :: AtomicValue}
-  | SumFunction {left :: AtomicValue, right :: AtomicValue}
-  deriving Show
-
-data AtomicValue
-  = BoolValue Bool
-  | IntValue Int
-  | StringValue String
-  deriving Show
+-- AtomicValue -------------------------------------------------
+data AtomicValue = BoolValue (Bool)
+                 | IntValue (Int)
+                 | StringValue (String)
+                 deriving ( Show)
+-- Expression --------------------------------------------------
+data Expression = Literal (AtomicValue)
+                | SumFunction (AtomicValue) (AtomicValue)
+                deriving ( Show)
+-- HaskellAst --------------------------------------------------
+data HaskellAst = LetIn (String) (Expression) (Expression)
+                deriving ( Show)

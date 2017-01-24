@@ -9,9 +9,11 @@ author:              Author name here
 maintainer:          example@example.com
 copyright:           2016 Author name here
 category:            Web
-build-type:          Simple
+build-type:          Custom
 cabal-version:       >=1.10
-extra-source-files:  src/Test.ag
+extra-source-files:  src/Ast.ag
+
+x-uuagc-file-options: "src/Ast.ag": [-md]
 
 executable favr
   hs-source-dirs:      src
@@ -20,4 +22,4 @@ executable favr
   other-modules:       Ast, Parser
   build-depends:       base >= 4.7 && < 5,
                        uu-parsinglib >= 2.9.1.1,
-                       uuagc-cabal >= 1.0.6.0
+                       uuagc >= 0.9.52.1, uuagc-builder

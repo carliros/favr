@@ -1,8 +1,7 @@
 module Main where
-import System.Environment
-import System.IO
-import Parser
-import Test
+import           Parser
+import           System.Environment
+import           System.IO
 
 main :: IO ()
 main = do
