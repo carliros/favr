@@ -41,5 +41,5 @@ pPin =     Pin1  <$ pSymbol "Pin1"
        <|> Pin12 <$ pSymbol "Pin12"
        <|> Pin13 <$ pSymbol "Pin13"
 
-pBoolValue =     Bool_True  <$ pSymbol "True"
-             <|> Bool_False <$ pSymbol "False"
+pBoolValue =     True  <$ pSymbol "True"
+             <|> False <$ pSymbol "False"
