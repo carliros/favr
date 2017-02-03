@@ -1,0 +1,19 @@
+
+data FAvr
+    | MainFunction name :: String
+                   actions :: IOActions
+
+type IOActions = [IOAction]
+
+data IOAction
+    | DigitalWrite pin :: PortD
+                   value :: Bool_Type
+
+data PortD
+    | Pin1 | Pin2 | Pin3 | Pin4 | Pin5 | Pin6 | Pin7 | Pin8 | Pin9 | Pin10 | Pin11 | Pin12 | Pin13
+
+data Bool_Type
+    | Bool_True
+    | Bool_False
+
+deriving * : Show

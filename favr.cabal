@@ -11,15 +11,16 @@ copyright:           2016 Author name here
 category:            Web
 build-type:          Custom
 cabal-version:       >=1.10
-extra-source-files:  src/Ast.ag
+extra-source-files:  src-ag/Ast.ag, src-ag/CodeGen.ag
 
-x-uuagc-file-options: "src/Ast.ag": [-md]
+x-uuagc-file-options: "src-ag/Ast.ag": [-mdH], "src-ag/CodeGen.ag": [-H, -mcfs]
 
 executable favr
-  hs-source-dirs:      src
+  hs-source-dirs:      src, src-ag
   main-is:             Main.hs
   default-language:    Haskell2010
-  other-modules:       Ast, Parser
+  other-modules:       Parser, Ast, CodeGen
   build-depends:       base >= 4.7 && < 5,
+                       filepath >= 1.4.1.0,
                        uu-parsinglib >= 2.9.1.1,
                        uuagc >= 0.9.52.1, uuagc-builder

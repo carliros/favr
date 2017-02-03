@@ -7,35 +7,39 @@
 
 module Parser where
 
---import Data.Char
-import           Text.ParserCombinators.UU
-import           Text.ParserCombinators.UU.Utils
---import Text.ParserCombinators.UU.BasicInstances hiding (Parser)
 import           Ast
 import           GHC.IO.Handle.Types
 import           System.IO
+import           Text.ParserCombinators.UU
+import           Text.ParserCombinators.UU.Utils
 
-parseFile :: FilePath -> IO HaskellAst
+parseFile :: FilePath -> IO FAvr
 parseFile file
   = do content <- readFile file
        let result = runParser file pMain content
        return result
 
-pMain = pSpaces *> pProgram <* pSpaces
+pMain = pSpaces *> pMainProgram <* pSpaces
 
-pProgram = LetIn <$ pSymbol "let" <*> pIdentifier
-                    <* pSymbol "="  <*> pExpression
-                    <* pSymbol "in" <*> pExpression
+pMainProgram = MainFunction <$> pSymbol "main" <* pSymbol "=" <*> pList1Sep (pSymbol ">>") pIOAction
 
-pExpression = pLiteral <|> pSumFunction
+pIOAction = pDigitalWrite
 
-pLiteral = Literal <$> pAtomicValue
+pDigitalWrite = DigitalWrite <$ pSymbol "digitalWrite" <*> pPin <*> pBoolValue
 
-pIdentifier = lexeme (pList (pLetter <|> pDigit))
+pPin =     Pin1  <$ pSymbol "Pin1"
+       <|> Pin2  <$ pSymbol "Pin2"
+       <|> Pin3  <$ pSymbol "Pin3"
+       <|> Pin4  <$ pSymbol "Pin4"
+       <|> Pin5  <$ pSymbol "Pin5"
+       <|> Pin6  <$ pSymbol "Pin6"
+       <|> Pin7  <$ pSymbol "Pin7"
+       <|> Pin8  <$ pSymbol "Pin8"
+       <|> Pin9  <$ pSymbol "Pin9"
+       <|> Pin10 <$ pSymbol "Pin10"
+       <|> Pin11 <$ pSymbol "Pin11"
+       <|> Pin12 <$ pSymbol "Pin12"
+       <|> Pin13 <$ pSymbol "Pin13"
 
-pAtomicValue =  BoolValue True <$ lexeme (pSymbol "True")
-            <|> BoolValue False <$ lexeme (pSymbol "False")
-            <|> IntValue <$> pInteger
-            <|> StringValue <$> pQuotedString
-
-pSumFunction = SumFunction <$> pAtomicValue <* pSymbol "+" <*> pAtomicValue
+pBoolValue =     Bool_True  <$ pSymbol "True"
+             <|> Bool_False <$ pSymbol "False"

@@ -1,0 +1,42 @@
+imports
+{
+import Ast
+}
+
+include "Ast.ag"
+
+attr FAvr IOAction
+    syn instructionList :: {[String]}
+
+sem FAvr
+    | MainFunction lhs.instructionList
+        = ".device ATMega328P" :
+          ".org 0x0000" :
+          ("jmp " ++ @name) :
+          (@name ++ ":") :
+          @actions.instructionList
+
+attr IOActions
+    syn instructionList use {++} {[]} :: {[String]}
+
+sem IOAction
+    | DigitalWrite lhs.instructionList
+        = ["sbi 0x0a, " ++ @pin.binaryValue, "sbi 0x0b, " ++ @pin.binaryValue]
+
+attr PortD
+    syn binaryValue :: String
+
+sem PortD
+    | Pin1 lhs.binaryValue = "0x04"
+    | Pin2 lhs.binaryValue = "0x04"
+    | Pin3 lhs.binaryValue = "0x04"
+    | Pin4 lhs.binaryValue = "0x04"
+    | Pin5 lhs.binaryValue = "0x04"
+    | Pin6 lhs.binaryValue = "0x04"
+    | Pin7 lhs.binaryValue = "0x04"
+    | Pin8 lhs.binaryValue = "0x04"
+    | Pin9 lhs.binaryValue = "0x04"
+    | Pin10 lhs.binaryValue = "0x04"
+    | Pin11 lhs.binaryValue = "0x04"
+    | Pin12 lhs.binaryValue = "0x04"
+    | Pin13 lhs.binaryValue = "0x04"
