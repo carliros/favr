@@ -23,7 +23,9 @@ pMain = pSpaces *> pMainProgram <* pSpaces
 
 pMainProgram = MainFunction <$> pSymbol "main" <* pSymbol "=" <*> pList1Sep (pSymbol ">>") pIOAction
 
-pIOAction = pDigitalWrite
+pIOAction = pDigitalWrite <|> pFunctionCall
+
+pFunctionCall = FunctionCall <$> pIdentifier
 
 pDigitalWrite = DigitalWrite <$ pSymbol "digitalWrite" <*> pPin <*> pBoolValue
 
@@ -43,3 +45,5 @@ pPin =     Pin1  <$ pSymbol "Pin1"
 
 pBoolValue =     True  <$ pSymbol "True"
              <|> False <$ pSymbol "False"
+
+pIdentifier = (:) <$> pLower <*> pList (pLower <|> pUpper <|> pDigit) <* pSpaces

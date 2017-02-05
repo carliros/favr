@@ -25,6 +25,8 @@ sem IOAction
           in if @value
              then [setupPin, "sbi 0x0b, " ++ @pin.binaryValue]
              else [setupPin, "cbi 0x0b, " ++ @pin.binaryValue]
+    | FunctionCall lhs.instructionList
+        = ["rjmp " ++ @name]
 
 attr PortD
     syn binaryValue :: String
