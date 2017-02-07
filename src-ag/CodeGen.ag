@@ -1,32 +1,92 @@
 imports
 {
 import Ast
+import qualified Data.Map.Strict as Map
+import Numeric
 }
 
 include "Ast.ag"
 
+attr Root
+    syn instructionList :: {[String]}
+
+sem Root
+    | Root lhs.instructionList
+        = let resetInstructions = [ "jmp reset"
+                                  , ".org 0x0020"
+                                  , "jmp overflow_handler"
+                                  , "reset:"
+                                  , "ldi r16, 0x05"
+                                  , "out 0x25, r16"
+                                  , "ldi r16, 0x01"
+                                  , "sts 0x6e, r16"
+                                  , "sei"
+                                  , "clr r16"
+                                  , "out 0x26, r16"]
+              extraDelayInstructions = [ "overflow_handler:"
+                                       , "inc r17"
+                                       , "cpi r17, 0x3d"
+                                       , "brne PC+2"
+                                       , "clr r17"
+                                       , "reti"]
+              delayInstructions = concat . Map.elems
+          in if @favr.hasDelay
+             then [ ".device ATMega328P"
+                   , ".org 0x0000"] ++
+                   resetInstructions ++
+                   @favr.instructionList ++
+                   (delayInstructions @favr.delayInstructionList) ++
+                   extraDelayInstructions
+             else ".device ATMega328P" :
+                  ".org 0x0000" :
+                  ("jmp " ++ @favr.mainFunctionName) :
+                  @favr.instructionList
+
+attr FAvr
+    syn mainFunctionName :: String
+
 attr FAvr IOAction
     syn instructionList :: {[String]}
+    syn hasDelay :: Bool
+    syn delayInstructionList :: {Map.Map String [String]}
 
 sem FAvr
     | MainFunction lhs.instructionList
-        = ".device ATMega328P" :
-          ".org 0x0000" :
-          ("jmp " ++ @name) :
-          (@name ++ ":") :
-          @actions.instructionList
+                        = (@name ++ ":") : @actions.instructionList
+                   lhs.mainFunctionName = @name
 
 attr IOActions
     syn instructionList use {++} {[]} :: {[String]}
+    syn hasDelay use {(||)} {False} :: Bool
+    syn delayInstructionList use {(Map.union)} {Map.empty} :: {Map.Map String [String]}
 
 sem IOAction
-    | DigitalWrite lhs.instructionList
-        = let setupPin = "sbi 0x0a, " ++ @pin.binaryValue
-          in if @value
-             then [setupPin, "sbi 0x0b, " ++ @pin.binaryValue]
-             else [setupPin, "cbi 0x0b, " ++ @pin.binaryValue]
-    | FunctionCall lhs.instructionList
-        = ["rjmp " ++ @name]
+    | DigitalWrite
+        lhs.instructionList
+            = let setupPin = "sbi 0x0a, " ++ @pin.binaryValue
+              in if @value
+                 then [setupPin, "sbi 0x0b, " ++ @pin.binaryValue]
+                 else [setupPin, "cbi 0x0b, " ++ @pin.binaryValue]
+        lhs.hasDelay = False
+        lhs.delayInstructionList = Map.empty
+    | FunctionCall
+        lhs.instructionList
+            = ["rjmp " ++ @name]
+        lhs.hasDelay = False
+        lhs.delayInstructionList = Map.empty
+    | DelayFunction
+        lhs.instructionList = ["rcall " ++ "delay" ++ show @miliSeconds]
+        lhs.hasDelay = True
+        lhs.delayInstructionList = let nameDelay  = "delay" ++ show @miliSeconds
+                                       nameSecCount = nameDelay ++ "_sec_count"
+                                       rate  = showHex ((@miliSeconds * 61) `div` 1000) ""
+                                       instr =  [ (nameDelay ++ ": ")
+                                                , "clr r17"
+                                                , (nameSecCount ++ ": ")
+                                                , ("cpi r17, 0x" ++ rate)
+                                                , ("brne " ++ nameSecCount)
+                                                , "ret"]
+                                   in Map.singleton nameDelay instr
 
 attr PortD
     syn binaryValue :: String

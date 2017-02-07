@@ -23,7 +23,9 @@ pMain = pSpaces *> pMainProgram <* pSpaces
 
 pMainProgram = MainFunction <$> pSymbol "main" <* pSymbol "=" <*> pList1Sep (pSymbol ">>") pIOAction
 
-pIOAction = pDigitalWrite <|> pFunctionCall
+pIOAction = pDigitalWrite <|> pFunctionCall <|> pDelayFunction
+
+pDelayFunction = DelayFunction <$ pSymbol "delay" <*> pNatural
 
 pFunctionCall = FunctionCall <$> pIdentifier
 

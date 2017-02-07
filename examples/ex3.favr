@@ -1,0 +1,6 @@
+
+main = digitalWrite Pin4 True
+    >> delay 500
+    >> digitalWrite Pin4 False
+    >> delay 1000
+    >> main

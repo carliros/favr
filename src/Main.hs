@@ -1,6 +1,8 @@
 module Main where
+import           Ast
 import           CodeGen
 import           Data.List
+import           Numeric
 import           Parser
 import           System.Environment
 import           System.FilePath
@@ -14,7 +16,7 @@ main = do
     then print "No file to compile."
     else do let file = head args
             result <- parseFile file
-            let genCodeList = sem_FAvr result
+            let genCodeList = sem_Root (Root result)
                 genCodeString = unlines genCodeList
                 newFileName = replaceExtension file "asm"
             writeFile newFileName genCodeString
