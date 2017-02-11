@@ -9,6 +9,7 @@ include "Ast.ag"
 
 attr Root
     syn instructionList :: {[String]}
+    inh device :: Device
 
 sem Root
     | Root lhs.instructionList
@@ -31,13 +32,13 @@ sem Root
                                        , "reti"]
               delayInstructions = concat . Map.elems
           in if @favr.hasDelay
-             then [ ".device ATMega328P"
+             then [ ".device " ++ show @lhs.device
                    , ".org 0x0000"] ++
                    resetInstructions ++
                    @favr.instructionList ++
                    (delayInstructions @favr.delayInstructionList) ++
                    extraDelayInstructions
-             else ".device ATMega328P" :
+             else (".device " ++ show @lhs.device) :
                   ".org 0x0000" :
                   ("jmp " ++ @favr.mainFunctionName) :
                   @favr.instructionList

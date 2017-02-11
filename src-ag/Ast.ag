@@ -2,6 +2,9 @@
 data Root
     | Root favr :: FAvr
 
+data Device
+    | ATMega328P
+
 data FAvr
     | MainFunction name :: String
                    actions :: IOActions
